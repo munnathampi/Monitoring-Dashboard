@@ -1,0 +1,2 @@
+# Monitoring-Dashboard
+Monitoring our infrastructure and application health is important. Similarly, the insight into our monitoring data. Grafana allows you to query, visualize, alert on and understand your metrics no matter where they are stored. Influxdb is a time-series database that can handle high write and query loads. Telegraf is a data collector that helps to collect metrics from different systems.
