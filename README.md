@@ -1,6 +1,6 @@
 We have several monitoring tools available in the market like Solarwinds, BMC Truesight, CA , Dynatrace.
 With this project i am trying to help the IT professionals to create a customised dashboard with performance metrics from different tools in the market with no additional cost or expenses.
-The opensource tools i used here is 
+The opensource tools I  used here is 
 #GRAFANA
 #INFLUXDB
 #TELEGRAF
