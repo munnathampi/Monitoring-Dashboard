@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+
+'''
+#---------------------
+# VERSION: 2020-10-03
+#---------------------
+#------------
+#Instruction
+#------------
+#Please call script inside [inputs.exec] input plugin of telegraf  located /etc/telegraf/telegraf.d/vsphere.conf
+#-------
+#Example
+#--------
+[[inputs.exec]]
+## Commands array
+commands = ["/directory/solar_network.py"]
+#Please set the time interval in telegraf config file to set the querying interval to solarwind API (5 minutes or 10 minutes)
+#------------------
+#SOLARWIND RESPONSE
+#------------------
+#Solarwind response is json format and need to convert to influxdb line protocol to write the API call result to influxdb.
+#SWQL query language similar to sql used to query the solarwind api
+#Access the SWQL console for creating the query statement and understand the schema of solarwind database
+'''
+
+#######import the required packs
+import requests
+from orionsdk import SwisClient
+import datetime
+from time import clock
+from datetime import timedelta, datetime
+import time as tm
+import math
+
+###########Establish connection to solarwind API
+
+username = ''
+password = ''
+npm_server = ''
+swis = SwisClient(npm_server, username, password)
+
+##Main Call
+def main():
+    requests.packages.urllib3.disable_warnings()
+    AllNode_perf()
+    network_perf()
+    port_perf()
+  
+
+##To convert the metrics field and tags to line protocol format
+def lpquote(s):
+    if (s == None or s is None):
+        s = "unknown"
+    else:
+        s = s.replace(" ", "\ ")
+        s = s.replace("=", "\=")
+        s = s.replace(",", "\,")
+        #s = s.replace("\\", "")
+    return s
+
+## To add quotes to the string values assigned as fields in influxdb series
+def quoteAdder(s):
+    double_q = '"'
+    return double_q + s + double_q
+
+
+##To convert the datetime to timestamp (Nanoseconds)
+def timeDeltaConverter(startTime):
+    if (startTime == None or startTime is None):
+        uptime = 0
+    else:
+        dat  = startTime.split(".")
+        d = datetime.strptime(dat[0], "%Y-%m-%dT%H:%M:%S")
+        uptime = int(tm.mktime(d.timetuple()) + 28800.)
+    # "--------------------------"
+    #return uptime
+    return uptime  
+
+
+
+
+##All Node  performance metrics.
+def AllNode_perf():
+    networks = swis.query("SELECT n.Caption as Name, n.LastSystemUptimePollUtc,n.CPULoad,n.Vendor,n.Status,n.ObjectSubType,n.PercentMemoryUsed, n.IPAddress, n.PercentLoss, n.ResponseTime,cs.IRAS_DC_Network_Segment,cs.IRAS_Network_Zone,cs.IRAS_Data_Center,cs.IRAS_Device_Category,cs.IRAS_Device_Category_Classification,cs.IRAS_ICT_System,cs.IRAS_DC_Application_Name FROM Orion.NodesCustomProperties cs, Orion.Nodes n WHERE n.NodeID=cs.NodeID")
+    for network in networks[u'results']:
+     tsm1 = timeDeltaConverter(network[u'LastSystemUptimePollUtc'])
+     if tsm1 != 0 or tsm1 == "":
+      ##Checking whether the node is up and running
+      if (network[u'Status'] != 2 and network[u'Status'] != 9 and network[u'ObjectSubType'] != "ICMP"):
+        print "NPM_AllNode,Name={},Vendor={},Polling={},IPAddress={} cpuusage={:.4f},memoryusage={:.4f},percentLoss={:.4f},responseTime={}i {}000000000".format(
+        lpquote(network[u'Name']),
+        lpquote(network[u'Vendor']),
+        lpquote(network[u'ObjectSubType']),
+        lpquote(network[u'IPAddress']),
+        network[u'CPULoad'],
+        network[u'PercentMemoryUsed'],
+        network[u'PercentLoss'],
+        network[u'ResponseTime'],
+	tsm1)
+      else:
+        continue
+
+
+
+##The network device performance metrics.    
+def network_perf():
+    networks = swis.query("SELECT n.Caption as Name, n.LastSystemUptimePollUtc,n.CPULoad,n.Vendor, n.Status, n.PercentMemoryUsed,n.ObjectSubType, n.PercentLoss,n.IPAddress, n.ResponseTime from Orion.Nodes n WHERE n.NodeID IN (SELECT DISTINCT i.NodeID FROM Orion.NPM.Interfaces i) AND n.NodeID=cs.NodeID"
+    for network in networks[u'results']:
+     tsm1 = timeDeltaConverter(network[u'LastSystemUptimePollUtc'])
+     if tsm1 != 0 or tsm1 == "":
+      if (network[u'Status'] != 2 and network[u'Status'] != 9 and network[u'ObjectSubType'] != "ICMP"):
+        print "NPM_Network,Name={},Vendor={},IPAddress={} cpuusage={:.4f},memoryusage={:.4f},percentLoss={:.4f},responseTime={}i {}000000000".format(
+        lpquote(network[u'Name']),
+	      lpquote(network[u'Vendor']),
+        lpquote(network[u'IPAddress']),
+        network[u'CPULoad'],
+        network[u'PercentMemoryUsed'],
+        network[u'PercentLoss'],
+        network[u'ResponseTime'],
+	tsm1)
+      else:
+        continue
+
+
+##The Port performance in case of switches and VM
+def port_perf():
+    ports = swis.query("SELECT n.Caption as Network,n.LastSystemUptimePollUtc,n.Status as nodestatus,n.ObjectSubType as objsub, i.ObjectSubType, i.Name, i.Index, i.Type, i.TypeName, i.TypeDescription, i.Speed, i.MTU, i.LastChange, i.PhysicalAddress, i.AdminStatus, i.OperStatus, i.StatusIcon, i.InBandwidth, i.OutBandwidth, i.Caption, i.FullName, i.Outbps, i.Inbps, i.Bps, i.OutPercentUtil, i.InPercentUtil, i.PercentUtil, i.OutPps, i.InPps, i.InPktSize, i.OutPktSize, i.OutUcastPps, i.OutMcastPps, i.InUcastPps, i.InMcastPps, i.InDiscardsThisHour, i.InDiscardsToday, i.InErrorsThisHour, i.InErrorsToday, i.OutDiscardsThisHour, i.OutDiscardsToday, i.OutErrorsThisHour, i.OutErrorsToday, i.CRCAlignErrorsThisHour, i.CRCAlignErrorsToday, i.LateCollisionsThisHour, i.LateCollisionsToday, i.MaxInBpsToday, i.MaxInBpsTime, i.MaxOutBpsToday, i.MaxOutBpsTime, i.Counter64, i.LastSync, i.Alias, i.IfName, i.Severity, i.CustomBandwidth, i.CustomPollerLastStatisticsPoll, i.PollInterval, i.NextPoll, i.RediscoveryInterval, i.NextRediscovery, i.StatCollection, i.UnPluggable, i.InterfaceSpeed, i.InterfaceCaption, i.InterfaceType, i.InterfaceSubType, i.MAC, i.InterfaceName, i.InterfaceIcon, i.InterfaceTypeName, i.AdminStatusLED, i.OperStatusLED, i.InterfaceAlias, i.InterfaceIndex, i.InterfaceLastChange, i.InterfaceMTU, i.InterfaceTypeDescription, i.OrionIdPrefix, i.OrionIdColumn, i.DuplexMode, i.SkippedPollingCycles, i.MinutesSinceLastSync, i.Status, i.InterfaceResponding, i.Description, i.ObsoleteDataCurrentSettingValue, i.ObsoleteDataFeatureStatus, i.HasObsoleteData, i.StatusDescription, i.StatusLED, i.UnManaged, i.Image, i.AncestorDisplayNames, i.StatusIconHint, i.DisplayName FROM Orion.NodesCustomProperties cs,Orion.NPM.Interfaces i, Orion.Nodes n WHERE i.NodeID = n.NodeID and n.NodeID=cs.NodeID")
+    for port in ports[u'results']:
+        mac = port[u'MAC']
+        physicalAddress = port[u'PhysicalAddress']
+        if not mac:
+            mac = "unknown"
+        if not physicalAddress:
+            physicalAddress = "unknown"
+  ####convert the timestamp
+	tsm1 = timeDeltaConverter(port[u'LastSystemUptimePollUtc'])
+	if tsm1 != 0 or tsm1 == "":
+	 if (port[u'nodestatus'] != 2 and port[u'nodestatus'] != 9 and port[u'objsub'] != "ICMP"):
+#print the network data recieved in influxdb format        
+          print "NPM_Port,Network={},Name={},Tstatus={} status={},inUtil={:.4f},outUtil={:.4f},number={}i,type={},mac={},physicalAddress={},speed={:.4f},mtu={}i,InBandwidth={:.4f},OutBandwidth={:.4f},outBps={:.4f},inBps={:.4f},bps={:.4f},outPps={:.4f},inPps={:.4f},inPktSize={:.4f},outPktSize={:.4f},outUcastPps={:.4f},outMcastPps={:.4f},inUcastPps={:.4f},inMcastPps={:.4f} {}000000000".format(
+        lpquote(port[u'Network']),
+        lpquote(port[u'Name']),
+        lpquote(port[u'StatusDescription']),
+        quoteAdder(port[u'StatusDescription']),
+        port[u'InPercentUtil'],
+        port[u'PercentUtil'],
+        port[u'Index'],
+        quoteAdder(lpquote(port[u'TypeDescription'])),
+        quoteAdder(lpquote(mac)),
+        quoteAdder(lpquote(physicalAddress)),
+        port[u'Speed'],
+        port[u'MTU'],
+        port[u'InBandwidth'],
+        port[u'OutBandwidth'],
+        port[u'Outbps'],
+        port[u'Inbps'],
+        port[u'Bps'],
+        port[u'OutPps'],
+        port[u'InPps'],
+        port[u'InPktSize'],
+        port[u'OutPktSize'],
+        port[u'OutUcastPps'],
+        port[u'OutMcastPps'],
+        port[u'InUcastPps'],
+        port[u'InMcastPps'],tsm1)
+ 
+if __name__ == '__main__':
+    main()
+
