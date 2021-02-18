@@ -16,7 +16,7 @@ We will use python language to integrate to different tools.
 >>> Integration to Servicenow.
 
 
-############Integration to Solarwinds Rest API#######################
+############Integration to Solarwinds#######################
 >>>> Main tasks include
 1. Open Solarwinds rest api ports from your server for connection
 2. Rest api authentication.
