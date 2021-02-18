@@ -16,7 +16,7 @@ We will use python language to integrate to different tools.
 >>> Integration to Servicenow.
 
 
-###########################################Integration to Solarwinds Rest API#############################################
+############Integration to Solarwinds Rest API#######################
 >>>> Main tasks include
 1. Open Solarwinds rest api ports from your server for connection
 2. Rest api authentication.
@@ -24,4 +24,4 @@ We will use python language to integrate to different tools.
 4. Convert the data to influxdb line protocol format.
 5. write the data to influxdb using telegraf.
 6. Create the dashboards in grafana.
-##########################################################################################################################
+#################################################################
