@@ -18,10 +18,10 @@ We will use python language to integrate to different tools.
 
 ############Integration to Solarwinds#######################
 >>>> Main tasks include
-1. Open Solarwinds rest api ports from your server for connection
-2. Rest api authentication.
-3. Queries to solarwinds rest api to retrieve performance data.
-4. Convert the data to influxdb line protocol format.
-5. write the data to influxdb using telegraf.
-6. Create the dashboards in grafana.
+1. Open Solarwinds rest api ports from your server for connection TCP17778.
+2. Rest api authentication ==> OrionSDK ==> https://github.com/solarwinds/orionsdk-python.
+3. Queries to solarwinds rest api to retrieve performance data ==> Schema ==> https://solarwinds.github.io/OrionSDK/schema/index.html.
+4. Convert the data to influxdb line protocol format ==> https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/.
+5. write the data to influxdb using telegraf ==> https://docs.influxdata.com/influxdb/v2.0/write-data/no-code/use-telegraf/manual-config/.
+6. Create the dashboards in grafana ==> Influx Language ==> https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data/.
 
