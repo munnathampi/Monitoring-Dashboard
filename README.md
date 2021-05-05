@@ -28,5 +28,5 @@ We will use python language to integrate to different tools.
 ############Integration to Mainframe#######################
 1. Open db2 port from your server.
 2. Install db2 client on your server ==> https://www.ibm.com/docs/en/tfim/6.2.1?topic=products-installing-db2-administration-client-linux-unix-systems.
-3. Python script to query your db2 mainframe and parse the data to influxdb ==> .
+3. Python script to query your db2 mainframe and parse the data to influxdb ==> https://github.com/munnathampi/Monitoring-Dashboard/blob/master/db2mainframe.py.
 4. Create dashboards in Grafana.
