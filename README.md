@@ -25,7 +25,7 @@ We will use python language to integrate to different tools.
 5. write the data to influxdb using telegraf ==> https://docs.influxdata.com/influxdb/v2.0/write-data/no-code/use-telegraf/manual-config/.
 6. Create the dashboards in grafana ==> Influx Language ==> https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data/.
 
-![Network_sw.NG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Network_sw.PNG![image](https://user-images.githubusercontent.com/23253649/129666236-a95e9031-837f-4ee0-9fd0-730fedd97ac5.png)
+![Network_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Network_sw.PNG![image](https://user-images.githubusercontent.com/23253649/129666236-a95e9031-837f-4ee0-9fd0-730fedd97ac5.png)
 )
 
 
