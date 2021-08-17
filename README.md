@@ -25,6 +25,10 @@ We will use python language to integrate to different tools.
 5. write the data to influxdb using telegraf ==> https://docs.influxdata.com/influxdb/v2.0/write-data/no-code/use-telegraf/manual-config/.
 6. Create the dashboards in grafana ==> Influx Language ==> https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data/.
 
+![Network Devices] https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Network_sw.PNG![image](https://user-images.githubusercontent.com/23253649/129665898-11f192bd-f240-49a5-864b-4cd94f9b603a.png)
+
+
+
 ############Integration to Mainframe#######################
 1. Open db2 port from your server.
 2. Install db2 client on your server ==> https://www.ibm.com/docs/en/tfim/6.2.1?topic=products-installing-db2-administration-client-linux-unix-systems.
