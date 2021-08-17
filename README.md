@@ -27,6 +27,8 @@ We will use python language to integrate to different tools.
 
 ![Network_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Network_sw.PNG)
 
+![Server_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Server_sw.PNG)
+
 
 
 ############Integration to Mainframe#######################
