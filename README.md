@@ -35,7 +35,7 @@ We will use python language to integrate to different tools.
 
 # Database
 ![db.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/db.PNG)
-![db_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/db_sw.PNG)
+![db_sw1.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/db_sw1.PNG)
 # Integration to Mainframe
 1. Open db2 port from your server.
 2. Install db2 client on your server ==> https://www.ibm.com/docs/en/tfim/6.2.1?topic=products-installing-db2-administration-client-linux-unix-systems.
