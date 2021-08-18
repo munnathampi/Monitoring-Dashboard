@@ -31,6 +31,8 @@ We will use python language to integrate to different tools.
 
 ![Utilization_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/Utilization_sw.PNG)
 
+![disk_sw.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/disk_sw.PNG)
+
 # Database
 ![db.PNG](https://github.com/munnathampi/Monitoring-Dashboard/blob/master/db.PNG)
 
